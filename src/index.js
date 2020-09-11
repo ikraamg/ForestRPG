@@ -1,32 +1,27 @@
-import Phaser from "phaser";
-import logoImg from "./assets/logo.png";
+/* eslint-disable no-use-before-define */
+import Phaser from 'phaser';
+import BootScene from './scenes/BootScene';
+import LoadScene from './scenes/LoadScene';
+import MenuScene from './scenes/MenuScene';
+
 
 const config = {
   type: Phaser.AUTO,
-  parent: "phaser-example",
+  // parent: 'game',
   width: 800,
   height: 600,
-  scene: {
-    preload: preload,
-    create: create
-  }
+  pixelArt: true,
+  physics: {
+    default: 'arcade',
+    arcade: {
+      gravity: { y: 0 }, // TODO Just check this out is this correct?
+    },
+  },
+  scene: [
+    BootScene,
+    LoadScene,
+    MenuScene,
+  ],
 };
 
 const game = new Phaser.Game(config);
-
-function preload() {
-  this.load.image("logo", logoImg);
-}
-
-function create() {
-  const logo = this.add.image(400, 150, "logo");
-
-  this.tweens.add({
-    targets: logo,
-    y: 450,
-    duration: 2000,
-    ease: "Power2",
-    yoyo: true,
-    loop: -1
-  });
-}
