@@ -1,7 +1,6 @@
 export default class LoadScene extends Phaser.Scene {
   constructor() {
     super({ key: 'LoadScene' });
-    console.log('LoadScene#constructor');
   }
 
   preload() {
@@ -17,12 +16,9 @@ export default class LoadScene extends Phaser.Scene {
     this.load.image('tileset', './src/assets/environment/tileset.png');
     this.load.image('objects', './src/assets/environment/objects.png');
     this.load.image('collisions', './src/assets/environment/collisions.png');
-    // this.load.tilemap('map', './src/assets/maps/map.json', null, this.Tilemap.TILED_JSON);
+
     this.load.tilemapTiledJSON('map', './src/assets/maps/map.json');
 
-    // atlas
-    // this.load.atlasJSONArray('atlas', './src/assets/atlas/atlas.png', './src/assets/atlas/atlas.json');
-    // this.load.atlasJSONArray('atlas-props', './src/assets/atlas/atlas-props.png', './src/assets/atlas/atlas-props.json');
     this.load.atlas('atlas', './src/assets/atlas/atlas.png', './src/assets/atlas/atlas.json');
     this.load.atlas('atlas-props', './src/assets/atlas/atlas-props.png', './src/assets/atlas/atlas-props.json');
 
@@ -44,13 +40,10 @@ export default class LoadScene extends Phaser.Scene {
 
     this.load.on('progress', (percent) => {
       loadingBar.fillRect(0, this.game.renderer.height / 2, this.game.renderer.width * percent, 50);
-      // console.log(percent);
     });
   }
 
   create() {
-    // this.this.state.start('Playthis');
-    console.log('load create section');
-    this.scene.start('MenuScene');
+    this.scene.start('GameScene');
   }
 }
