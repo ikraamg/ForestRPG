@@ -25,10 +25,4 @@ export default class Arrow extends Phaser.Physics.Arcade.Sprite {
       default:
     }
   }
-
-  update() {
-    if (this.x < 32) {
-      this.destroy();
-    }
-  }
 }

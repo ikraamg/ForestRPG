@@ -21,56 +21,14 @@ export default class GameScene extends Phaser.Scene {
   }
 
   update(time) {
-    const timeCount = Math.round((time / 1000) - 8);
-    const scoreCalc = this.player.health * 200 + this.player.kills * 100 - this.player.shots * 10 - timeCount * 2;
-    this.timeDisplay.setText(`TIME: ${timeCount}`);
-    this.scoreDisplay.setText(`SCORE: ${scoreCalc}`);
-
-    this.physics.collide(this.player, this.colLayer);
-    this.physics.collide(this.enemiesGroup, this.colLayer);
-    this.physics.overlap(this.player, this.enemiesGroup, this.hurtPlayer, null, this);
-    this.physics.overlap(this.player, this.exit, this.exitManager, null, this);
-    this.physics.overlap(this.enemiesGroup, this.projectilesGroup, this.shotImpact, null, this);
-
+    this.scoreManager(time);
+    this.interactionManager();
     this.updateHud();
-
-    this.player.setVelocity(0);
-    const velocity = 50;
-    if (this.cursors.right.isDown) {
-      this.player.setVelocity(velocity, 0);
-      this.player.direction = 'right';
-    }
-    if (this.cursors.left.isDown) {
-      this.player.setVelocity(-velocity, 0);
-      this.player.direction = 'left';
-    }
-    if (this.cursors.up.isDown) {
-      this.player.setVelocity(0, -velocity);
-      this.player.direction = 'up';
-    }
-    if (this.cursors.down.isDown) {
-      this.player.setVelocity(0, velocity);
-      this.player.direction = 'down';
-    }
-    if (Phaser.Input.Keyboard.JustDown(this.cursors.space)) {
-      this.player.setVelocity(0, 0);
-      const shot = new Arrow(this);
-      this.projectilesGroup.add(shot);
-      this.audioSlash.play();
-      this.player.shots += 1;
-      this.shotDisplay.setText(`SHOTS: ${this.player.shots}`);
-    }
-
-    for (let i = 0; i < this.projectilesGroup.getChildren().length; i += 1) {
-      const arrow = this.projectilesGroup.getChildren()[i];
-      if (!this.cameras.main.worldView.contains(arrow.x, arrow.y)) {
-        arrow.destroy();
-      }
-    }
+    this.destroyArrows();
+    this.inputManager();
   }
 
   // CREATE FUNCTIONS
-
   addAudios() {
     this.audioHurt = this.sound.add('hurt');
     this.audioItem = this.sound.add('item');
@@ -161,12 +119,55 @@ export default class GameScene extends Phaser.Scene {
 
   createCamera() {
     this.cameras.main.roundPixels = true;
-    // this.cameras.main.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
     this.cameras.main.setZoom(3.5);
     this.cameras.main.startFollow(this.player);
   }
 
   // UPDATE FUNCTIONS
+
+  inputManager() {
+    this.player.setVelocity(0);
+    const velocity = 50;
+    if (this.cursors.right.isDown) {
+      this.player.setVelocity(velocity, 0);
+      this.player.direction = 'right';
+    }
+    if (this.cursors.left.isDown) {
+      this.player.setVelocity(-velocity, 0);
+      this.player.direction = 'left';
+    }
+    if (this.cursors.up.isDown) {
+      this.player.setVelocity(0, -velocity);
+      this.player.direction = 'up';
+    }
+    if (this.cursors.down.isDown) {
+      this.player.setVelocity(0, velocity);
+      this.player.direction = 'down';
+    }
+    if (Phaser.Input.Keyboard.JustDown(this.cursors.space)) {
+      this.player.setVelocity(0, 0);
+      const shot = new Arrow(this);
+      this.projectilesGroup.add(shot);
+      this.audioSlash.play();
+      this.player.shots += 1;
+      this.shotDisplay.setText(`SHOTS: ${this.player.shots}`);
+    }
+  }
+
+  scoreManager(time) {
+    const timeCount = Math.round((time / 1000) - 8);
+    const scoreCalc = this.player.health * 200 + this.player.kills * 100 - this.player.shots * 10 - timeCount * 2;
+    this.timeDisplay.setText(`TIME: ${timeCount}`);
+    this.scoreDisplay.setText(`SCORE: ${scoreCalc}`);
+  }
+
+  interactionManager() {
+    this.physics.collide(this.player, this.colLayer);
+    this.physics.collide(this.enemiesGroup, this.colLayer);
+    this.physics.overlap(this.player, this.enemiesGroup, this.hurtPlayer, null, this);
+    this.physics.overlap(this.player, this.exit, this.exitManager, null, this);
+    this.physics.overlap(this.enemiesGroup, this.projectilesGroup, this.shotImpact, null, this);
+  }
 
   shotImpact(enemy, shot) {
     enemy.destroy();
@@ -261,5 +262,14 @@ export default class GameScene extends Phaser.Scene {
       treant.setSize(10, 10, 7, 12);
       this.enemiesGroup.add(treant).setDepth(1);
     });
+  }
+
+  destroyArrows() {
+    for (let i = 0; i < this.projectilesGroup.getChildren().length; i += 1) {
+      const arrow = this.projectilesGroup.getChildren()[i];
+      if (!this.cameras.main.worldView.contains(arrow.x, arrow.y)) {
+        arrow.destroy();
+      }
+    }
   }
 }
