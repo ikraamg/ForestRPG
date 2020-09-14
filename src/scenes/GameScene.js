@@ -165,7 +165,7 @@ export default class GameScene extends Phaser.Scene {
     this.physics.collide(this.player, this.colLayer);
     this.physics.collide(this.enemiesGroup, this.colLayer);
     this.physics.overlap(this.player, this.enemiesGroup, this.hurtPlayer, null, this);
-    this.physics.overlap(this.player, this.exit, this.exitManager, null, this);
+    this.physics.overlap(this.player, this.exit, this.gameOver, null, this);
     this.physics.overlap(this.enemiesGroup, this.projectilesGroup, this.shotImpact, null, this);
   }
 
@@ -180,13 +180,6 @@ export default class GameScene extends Phaser.Scene {
       this.exit.alpha = 1;
     }
     this.killDisplay.setText(`KILLS: ${this.player.kills}`);
-  }
-
-  exitManager(player) {
-    // this.game.state.start('GameOver');
-    // pass player score
-    console.log('exit!');
-    this.soundtrack.stop();
   }
 
   resetHurtTime() {
@@ -227,14 +220,17 @@ export default class GameScene extends Phaser.Scene {
     this.audioHurt.play();
 
     if (player.health < 1) {
+      this.player.scoreCalc -= 200;
       this.gameOver();
     }
   }
 
   gameOver() {
     console.log('gameover!');
-    console.log(this.player.score);
+    console.log(this.player.scoreCalc);
+    this.soundtrack.stop();
     // this.scene.start('GameOverScene');
+    // Pass score into next scene
   }
 
   updateHud() {
