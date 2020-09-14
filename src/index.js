@@ -4,6 +4,8 @@ import BootScene from './scenes/BootScene';
 import LoadScene from './scenes/LoadScene';
 import MenuScene from './scenes/MenuScene';
 import GameScene from './scenes/GameScene';
+import GameOverScene from './scenes/GameOverScene';
+
 
 const config = {
   type: Phaser.AUTO,
@@ -23,6 +25,7 @@ const config = {
     LoadScene,
     // MenuScene,
     GameScene,
+    GameOverScene,
   ],
 };
 
