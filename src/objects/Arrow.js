@@ -1,4 +1,5 @@
 
+// eslint-disable-next-line no-undef
 export default class Arrow extends Phaser.Physics.Arcade.Sprite {
   constructor(scene) {
     super(scene, scene.player.x, scene.player.y, 'atlas', 'arrow');

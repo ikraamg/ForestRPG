@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-undef
 export default class Enemies extends Phaser.Physics.Arcade.Sprite {
   constructor(scene, x, y, verticalMove, atlasSprite) {
     super(scene, x * 16, y * 16, 'atlas', atlasSprite);

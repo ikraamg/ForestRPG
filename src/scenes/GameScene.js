@@ -2,6 +2,7 @@ import Player from '../objects/Player';
 import Enemy from '../objects/Enemy';
 import Arrow from '../objects/Arrow';
 
+// eslint-disable-next-line no-undef
 export default class GameScene extends Phaser.Scene {
   constructor() {
     super({ key: 'GameScene' });
@@ -21,11 +22,11 @@ export default class GameScene extends Phaser.Scene {
   }
 
   update(time) {
-    this.scoreManager(time);
+    this.inputManager();
     this.interactionManager();
+    this.scoreManager(time);
     this.updateHud();
     this.destroyArrows();
-    this.inputManager();
   }
 
   // CREATE FUNCTIONS
@@ -103,11 +104,8 @@ export default class GameScene extends Phaser.Scene {
     };
 
     this.killDisplay = this.add.text(this.player.x - 110, this.player.y - 85, 'KILLS:', fontConfig);
-
     this.shotDisplay = this.add.text(this.player.x - 50, this.player.y - 85, 'SHOTS:', fontConfig);
-
     this.timeDisplay = this.add.text(this.player.x - 50, this.player.y - 85, 'TIME:', fontConfig);
-
     this.scoreDisplay = this.add.text(this.player.x - 50, this.player.y - 85, 'SCORE:', fontConfig);
 
     // this.scoreLabel = this.add.bitmapText(10, 5, 'pixelFont', 'SCORE ', 40)
@@ -144,6 +142,7 @@ export default class GameScene extends Phaser.Scene {
       this.player.setVelocity(0, velocity);
       this.player.direction = 'down';
     }
+    // eslint-disable-next-line no-undef
     if (Phaser.Input.Keyboard.JustDown(this.cursors.space)) {
       this.player.setVelocity(0, 0);
       const shot = new Arrow(this);
@@ -156,9 +155,10 @@ export default class GameScene extends Phaser.Scene {
 
   scoreManager(time) {
     const timeCount = Math.round((time / 1000) - 8);
-    const scoreCalc = this.player.health * 200 + this.player.kills * 100 - this.player.shots * 10 - timeCount * 2;
+    this.player.scoreCalc = (this.player.health * 200 + this.player.kills * 100
+      - this.player.shots * 10 - timeCount * 2);
     this.timeDisplay.setText(`TIME: ${timeCount}`);
-    this.scoreDisplay.setText(`SCORE: ${scoreCalc}`);
+    this.scoreDisplay.setText(`SCORE: ${this.player.scoreCalc}`);
   }
 
   interactionManager() {
@@ -182,8 +182,9 @@ export default class GameScene extends Phaser.Scene {
     this.killDisplay.setText(`KILLS: ${this.player.kills}`);
   }
 
-  exitManager(player, exit) {
+  exitManager(player) {
     // this.game.state.start('GameOver');
+    // pass player score
     console.log('exit!');
     this.soundtrack.stop();
   }
@@ -232,9 +233,9 @@ export default class GameScene extends Phaser.Scene {
 
   gameOver() {
     console.log('gameover!');
+    console.log(this.player.score);
     // this.scene.start('GameOverScene');
   }
-
 
   updateHud() {
     this.hp1.setPosition(this.player.x - 8, this.player.y - 12);

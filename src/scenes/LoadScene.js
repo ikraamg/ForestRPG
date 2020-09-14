@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-undef
 export default class LoadScene extends Phaser.Scene {
   constructor() {
     super({ key: 'LoadScene' });
