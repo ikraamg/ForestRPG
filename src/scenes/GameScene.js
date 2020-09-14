@@ -1,6 +1,5 @@
 import Player from '../objects/Player';
-import Mole from '../objects/Mole';
-import Treant from '../objects/Treant';
+import Enemy from '../objects/Enemy';
 import Arrow from '../objects/Arrow';
 
 
@@ -213,7 +212,7 @@ export default class GameScene extends Phaser.Scene {
   createMoles() {
     const enemiesArray = this.map.createFromObjects('Object Layer', 6, { key: 'atlas' }, this);
     for (let i = 0; i < enemiesArray.length; i++) {
-      const sprite = new Mole(this, enemiesArray[i].x / 16, enemiesArray[i].y / 16, true);
+      const sprite = new Enemy(this, enemiesArray[i].x / 16, enemiesArray[i].y / 16, true, 'idle/mole-idle-front');
       sprite.setSize(10, 10, 7, 12);
       this.enemiesGroup.add(sprite).setDepth(1);
     }
@@ -222,7 +221,7 @@ export default class GameScene extends Phaser.Scene {
   createTreants() {
     const enemiesArray = this.map.createFromObjects('Object Layer', 5, { key: 'atlas' }, this);
     for (let i = 0; i < enemiesArray.length; i++) {
-      const sprite = new Treant(this, enemiesArray[i].x / 16, enemiesArray[i].y / 16, false);
+      const sprite = new Enemy(this, enemiesArray[i].x / 16, enemiesArray[i].y / 16, false, 'idle/treant-idle-front');
       sprite.setSize(10, 10, 7, 12);
       this.enemiesGroup.add(sprite);
     }

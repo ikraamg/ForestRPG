@@ -1,6 +1,6 @@
-export default class Mole extends Phaser.Physics.Arcade.Sprite {
-  constructor(scene, x, y, verticalMove) {
-    super(scene, x * 16, y * 16, 'atlas', 'idle/mole-idle-front');
+export default class Enemies extends Phaser.Physics.Arcade.Sprite {
+  constructor(scene, x, y, verticalMove, atlasSprite) {
+    super(scene, x * 16, y * 16, 'atlas', atlasSprite);
     scene.sys.updateList.add(this);
     scene.sys.displayList.add(this);
 
