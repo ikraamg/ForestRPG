@@ -1,8 +1,8 @@
+import Phaser from 'phaser';
+import Arrow from '../objects/Arrow';
 import Player from '../objects/Player';
 import Enemy from '../objects/Enemy';
-import Arrow from '../objects/Arrow';
 
-// eslint-disable-next-line no-undef
 export default class GameScene extends Phaser.Scene {
   constructor() {
     super({ key: 'GameScene' });
@@ -27,6 +27,7 @@ export default class GameScene extends Phaser.Scene {
     this.scoreManager(time);
     this.updateHud();
     this.destroyArrows();
+    this.gameOver();
   }
 
   // CREATE FUNCTIONS
@@ -47,7 +48,6 @@ export default class GameScene extends Phaser.Scene {
     this.soundtrack.play(soundtrackConfig);
   }
 
-
   createMap() {
     const map = this.make.tilemap({ key: 'map' });
     const terrainset = map.addTilesetImage('tileset');
@@ -63,7 +63,6 @@ export default class GameScene extends Phaser.Scene {
     this.physics.world.bounds.height = map.heightInPixels;
     this.map = map;
   }
-
 
   createGroups() {
     this.enemiesGroup = this.add.group();
@@ -122,7 +121,6 @@ export default class GameScene extends Phaser.Scene {
   }
 
   // UPDATE FUNCTIONS
-
   inputManager() {
     this.player.setVelocity(0);
     const velocity = 50;
@@ -142,7 +140,7 @@ export default class GameScene extends Phaser.Scene {
       this.player.setVelocity(0, velocity);
       this.player.direction = 'down';
     }
-    // eslint-disable-next-line no-undef
+
     if (Phaser.Input.Keyboard.JustDown(this.cursors.space)) {
       this.player.setVelocity(0, 0);
       const shot = new Arrow(this);
@@ -229,7 +227,7 @@ export default class GameScene extends Phaser.Scene {
     console.log('gameover!');
     console.log(this.player.scoreCalc);
     this.soundtrack.stop();
-    // this.scene.start('GameOverScene');
+    this.scene.start('GameOverScene', { score: this.player.scoreCalc });
     // Pass score into next scene
   }
 

@@ -1,5 +1,6 @@
 
-// eslint-disable-next-line no-undef
+import Phaser from 'phaser';
+
 export default class Player extends Phaser.Physics.Arcade.Sprite {
   constructor(scene, x, y, texture, frame) {
     super(scene, x * 16, y * 16, texture, frame);
