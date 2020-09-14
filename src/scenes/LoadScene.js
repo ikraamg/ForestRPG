@@ -10,7 +10,7 @@ export default class LoadScene extends Phaser.Scene {
     this.load.image('enter', './src/assets/sprites/press-enter-text.png');
     this.load.image('credits', './src/assets/sprites/credits-text.png');
     this.load.image('instructions', './src/assets/sprites/instructions.png');
-    this.load.image('thisover', './src/assets/sprites/game-over.png');
+    this.load.image('gameover', './src/assets/sprites/game-over.png');
 
     // tileset
     this.load.image('tileset', './src/assets/environment/tileset.png');
