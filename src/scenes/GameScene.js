@@ -19,6 +19,7 @@ export default class GameScene extends Phaser.Scene {
     this.bindKeys();
     this.createHud();
     this.createCamera();
+    this.startTime = this.time.now;
   }
 
   update(time) {
@@ -27,7 +28,7 @@ export default class GameScene extends Phaser.Scene {
     this.scoreManager(time);
     this.updateHud();
     this.destroyArrows();
-    this.gameOver();
+    // this.gameOver();
   }
 
   // CREATE FUNCTIONS
@@ -152,7 +153,7 @@ export default class GameScene extends Phaser.Scene {
   }
 
   scoreManager(time) {
-    const timeCount = Math.round((time / 1000) - 8);
+    const timeCount = Math.round(((time - this.startTime) / 1000) - 5);
     this.player.scoreCalc = (this.player.health * 200 + this.player.kills * 100
       - this.player.shots * 10 - timeCount * 2);
     this.timeDisplay.setText(`TIME: ${timeCount}`);
