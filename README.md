@@ -70,13 +70,13 @@ An external api service is used to store the player names and scores. Top 5 play
 - (↓) down arrow key => Move down
 - (Space) key => Attack enemy
 
-<p align="center"> <img src="" alt="ForestRPG Game" width="100%"> </p>
+<p align="center"> <img src="https://user-images.githubusercontent.com/34813339/93250228-ccb63300-f792-11ea-8c15-1abf99f364b7.png" alt="ForestRPG Game" width="100%"> </p>
 
 <!-- Live Link  -->
 
 ## Live Link
 
-[Click here](https://ikraamghoor.com/ForestRPG/)
+[Click here](https://raw.githack.com/ikraamg/ForestRPG/game-feature/dist/index.html)
 
 <!-- INSTALLATION -->
 
@@ -122,33 +122,13 @@ npm run test
 
 ## Game Design
 
-The game uses high-quality sprites to bring all scenes to life. User can expect well-designed animations and map textures.
-
-### Robin
-
-<div>
-<div style="width: 200px;">
-<img style="float: left;" width="80" height="100" src="">
-</div>
-- Role: Main Character </br>
-- Health: 3 </br>
-</div>
+The game uses high-quality assets to bring all scenes to life.
 
 <!-- game play -->
 
 ## Game Play
 
-### Preload Screen
-
-![preload]()
-
-### Title Screen
-
-![title]()
-
-### Game Play
-
-<p align="center"> <img src="" alt="ForestRPG Game" width="100%"> </p>
+<p align="center"> <img src="https://user-images.githubusercontent.com/34813339/93250526-3c2c2280-f793-11ea-9c66-a053e4e0a1c1.png" alt="ForestRPG Game" width="100%"> </p>
 
 ### Leaderboard
 
