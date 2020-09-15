@@ -29,8 +29,8 @@ export default class GameOverScene extends Phaser.Scene {
   }
 
   addDisplayElements() {
-    this.background = this.add.tileSprite(400, 300, 800, 600, 'title-bg');
-    this.pressEnter = this.add.image(400, 400, 'enter').setScale(3);
+    this.add.tileSprite(400, 300, 800, 600, 'title-bg');
+    this.add.image(400, 400, 'enter').setScale(3);
 
     this.add.text(290, 30,
       'Game Over', {
@@ -75,6 +75,6 @@ export default class GameOverScene extends Phaser.Scene {
   }
 
   toLeaderBoard() {
-    // this.scene.start('LeaderBoard');
+    this.scene.start('LeaderBoardScene');
   }
 }
