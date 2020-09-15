@@ -13,6 +13,12 @@ const config = {
   width: 800,
   height: 600,
   pixelArt: true,
+  scale: {
+    autoCenter: Phaser.Scale.CENTER_BOTH,
+  },
+  dom: {
+    createContainer: true,
+  },
   roundPixels: true,
   physics: {
     default: 'arcade',

@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
-// import { saveScore } from '../api/api';
+import { postScore } from '../api/api';
+
 export default class GameOverScene extends Phaser.Scene {
   constructor() {
     super({ key: 'GameOverScene' });
@@ -37,8 +38,22 @@ export default class GameOverScene extends Phaser.Scene {
         color: '#ffffff',
         align: 'center',
       });
-    // postScore(this.model.user, this.model.score);
-    // this.gameButton = new Button(this, 400, (config.height / 2) + 170,
-    // 'blueButton1', 'blueButton2', 'Submit Score', 'Leaderboard');
+
+    this.inputText = this.add.dom(400, 300, 'input', {
+      type: 'text',
+      name: 'nameField',
+      fontSize: '28px',
+      backgroundColor: '#fff',
+    });
+
+    this.enter = this.input.keyboard.addKeys('enter');
+  }
+
+  update() {
+    if (Phaser.Input.Keyboard.JustDown(this.enter.enter) && this.inputText.node.value !== '') {
+      console.log(this.inputText.node.value);
+      postScore(this.inputText.node.value, this.score);
+      console.log('update -> postScore(this.inputText.node.value, this.score);', postScore(this.inputText.node.value, this.score));
+    }
   }
 }
