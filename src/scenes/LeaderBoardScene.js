@@ -41,7 +41,7 @@ export default class LeaderBoardScene extends Phaser.Scene {
 
   update() {
     if (Phaser.Input.Keyboard.JustDown(this.endKeys.enter)) {
-      this.scene.start('GuideScene');
+      this.scene.start('MenuScene');
     }
   }
 

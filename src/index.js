@@ -7,6 +7,7 @@ import GameScene from './scenes/GameScene';
 import GameOverScene from './scenes/GameOverScene';
 import LeaderBoardScene from './scenes/LeaderBoardScene';
 import GuideScene from './scenes/GuideScene';
+import CreditsScene from './scenes/CreditsScene';
 
 
 const config = {
@@ -31,7 +32,8 @@ const config = {
   scene: [
     BootScene,
     LoadScene,
-    // MenuScene,
+    MenuScene,
+    CreditsScene,
     GuideScene,
     GameScene,
     GameOverScene,
@@ -39,5 +41,5 @@ const config = {
   ],
 };
 
-// eslint-disable-next-line no-unused-vars
 const game = new Phaser.Game(config);
+game.config.musicStatus = true;
