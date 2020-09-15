@@ -5,6 +5,9 @@ import LoadScene from './scenes/LoadScene';
 import MenuScene from './scenes/MenuScene';
 import GameScene from './scenes/GameScene';
 import GameOverScene from './scenes/GameOverScene';
+import LeaderBoardScene from './scenes/LeaderBoardScene';
+import GuideScene from './scenes/GuideScene';
+
 
 const config = {
   type: Phaser.AUTO,
@@ -29,8 +32,10 @@ const config = {
     BootScene,
     LoadScene,
     // MenuScene,
+    GuideScene,
     GameScene,
     GameOverScene,
+    LeaderBoardScene,
   ],
 };
 
