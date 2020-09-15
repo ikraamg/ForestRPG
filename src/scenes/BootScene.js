@@ -5,6 +5,10 @@ export default class BootScene extends Phaser.Scene {
     super({ key: 'BootScene' });
   }
 
+  preload() {
+    this.load.image('logo', './src/assets/sprites/logo.png');
+  }
+
   create() {
     this.scene.start('LoadScene');
   }

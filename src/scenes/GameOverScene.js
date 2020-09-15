@@ -21,9 +21,7 @@ export default class GameOverScene extends Phaser.Scene {
     }
 
     if (Phaser.Input.Keyboard.JustDown(this.endKeys.enter) && this.inputText.node.value !== '') {
-      console.log(this.inputText.node.value);
-      // postScore(this.inputText.node.value, this.score);
-      console.log('update -> postScore(this.inputText.node.value, this.score);', postScore(this.inputText.node.value, this.score));
+      postScore(this.inputText.node.value, this.score);
       this.toLeaderBoard();
     }
   }

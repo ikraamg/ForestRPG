@@ -6,14 +6,22 @@ export default class LoadScene extends Phaser.Scene {
   }
 
   preload() {
+    this.add.image(400, 200, 'logo');
+    this.loadBar();
     this.loadImages();
     this.loadMaps();
     this.loadAudio();
-    this.loadBar();
   }
 
   create() {
-    this.scene.start('GuideScene');
+    this.soundtrack = this.sound.add('music');
+    const soundtrackConfig = {
+      mute: false,
+      volume: 0.5,
+      loop: true,
+    };
+    this.soundtrack.play(soundtrackConfig);
+    this.scene.start('MenuScene', { soundtrack: this.soundtrack });
   }
 
   // Preload Methods
@@ -34,6 +42,8 @@ export default class LoadScene extends Phaser.Scene {
     this.load.image('title-bg', './src/assets/sprites/title-screen-bg.png');
     this.load.image('enter', './src/assets/sprites/press-enter-text.png');
     this.load.image('instructions', './src/assets/sprites/instructions.png');
+    this.load.image('mute', './src/assets/sprites/mute.png');
+    this.load.image('sound', './src/assets/sprites/sound.png');
     this.load.image('exit', './src/assets/environment/exit-open.png');
   }
 

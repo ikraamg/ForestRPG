@@ -10,7 +10,6 @@ export default class GameScene extends Phaser.Scene {
 
   create() {
     this.addAudios();
-    this.startSoundtrack();
     this.createMap();
     this.createGroups();
     this.createExit();
@@ -28,7 +27,6 @@ export default class GameScene extends Phaser.Scene {
     this.scoreManager(time);
     this.updateHud();
     this.destroyArrows();
-    // this.gameOver();
   }
 
   // CREATE FUNCTIONS
@@ -37,16 +35,6 @@ export default class GameScene extends Phaser.Scene {
     this.audioItem = this.sound.add('item');
     this.audioEnemyDeath = this.sound.add('enemy-death');
     this.audioSlash = this.sound.add('slash');
-  }
-
-  startSoundtrack() {
-    this.soundtrack = this.sound.add('music');
-    const soundtrackConfig = {
-      mute: false,
-      volume: 0.5,
-      loop: true,
-    };
-    this.soundtrack.play(soundtrackConfig);
   }
 
   createMap() {
@@ -107,12 +95,6 @@ export default class GameScene extends Phaser.Scene {
     this.shotDisplay = this.add.text(this.player.x - 50, this.player.y - 85, 'SHOTS:', fontConfig);
     this.timeDisplay = this.add.text(this.player.x - 50, this.player.y - 85, 'TIME:', fontConfig);
     this.scoreDisplay = this.add.text(this.player.x - 50, this.player.y - 85, 'SCORE:', fontConfig);
-
-    // this.scoreLabel = this.add.bitmapText(10, 5, 'pixelFont', 'SCORE ', 40)
-    // .setScrollFactor(0, 0);
-    // this.healthLabel = this.add
-    //   .bitmapText(10, 50, 'pixelFont', 'HEALTH ', 40)
-    //   .setScrollFactor(0, 0);
   }
 
   createCamera() {
@@ -225,11 +207,7 @@ export default class GameScene extends Phaser.Scene {
   }
 
   gameOver() {
-    console.log('gameover!');
-    console.log(this.player.scoreCalc);
-    this.soundtrack.stop();
     this.scene.start('GameOverScene', { score: this.player.scoreCalc });
-    // Pass score into next scene
   }
 
   updateHud() {
