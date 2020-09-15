@@ -54,7 +54,7 @@
 
 In this project, a 2D RPG game in JavaScript was built with the help of Phaser library.
 
-The main character, Robin, needs to kill enemies as quickly as possible with the least amount of arrows to open the exit door and get a high score.
+The main character needs to kill enemies as quickly as possible with the least amount of arrows to open the exit door(6 minimum) and get a high score.
 
 An external api service is used to store the player names and scores. Top 5 players are displayed in game leaderboard.
 
@@ -96,6 +96,12 @@ npm run start
 
 Now go to [localhost:8000](http://localhost:8080) in your browser.
 
+##### Test with
+
+```bash
+npm run test
+```
+
 <!-- BUILD WITH -->
 
 ## Built With
@@ -116,7 +122,7 @@ Now go to [localhost:8000](http://localhost:8080) in your browser.
 
 ## Game Design
 
-The game uses high-quality sprites to bring all scenes to life. User can expect well-designed animations and map textures. I used [Tiled](https://www.mapeditor.org/) to design the game map.
+The game uses high-quality sprites to bring all scenes to life. User can expect well-designed animations and map textures.
 
 ### Robin
 
