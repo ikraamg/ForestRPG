@@ -39,28 +39,28 @@ export default class LoadScene extends Phaser.Scene {
   }
 
   loadImages() {
-    this.load.image('title-bg', './src/assets/sprites/title-screen-bg.png');
-    this.load.image('enter', './src/assets/sprites/press-enter-text.png');
-    this.load.image('instructions', './src/assets/sprites/instructions.png');
-    this.load.image('mute', './src/assets/sprites/mute.png');
-    this.load.image('sound', './src/assets/sprites/sound.png');
-    this.load.image('exit', './src/assets/environment/exit-open.png');
+    this.load.image('title-bg', './assets/sprites/title-screen-bg.png');
+    this.load.image('enter', './assets/sprites/press-enter-text.png');
+    this.load.image('instructions', './assets/sprites/instructions.png');
+    this.load.image('mute', './assets/sprites/mute.png');
+    this.load.image('sound', './assets/sprites/sound.png');
+    this.load.image('exit', './assets/environment/exit-open.png');
   }
 
   loadAudio() {
-    this.load.audio('music', ['./src/assets/sound/ancient_path.ogg', './src/assets/sound/ancient_path.mp3']);
-    this.load.audio('hurt', ['./src/assets/sound/hurt.ogg', './src/assets/sound/hurt.mp3']);
-    this.load.audio('slash', ['./src/assets/sound/slash.ogg', './src/assets/sound/slash.mp3']);
-    this.load.audio('item', ['./src/assets/sound/item.ogg', './src/assets/sound/item.mp3']);
-    this.load.audio('enemy-death', ['./src/assets/sound/enemy-death.ogg', './src/assets/sound/enemy-death.mp3']);
+    this.load.audio('music', ['./assets/sound/ancient_path.ogg', './assets/sound/ancient_path.mp3']);
+    this.load.audio('hurt', ['./assets/sound/hurt.ogg', './assets/sound/hurt.mp3']);
+    this.load.audio('slash', ['./assets/sound/slash.ogg', './assets/sound/slash.mp3']);
+    this.load.audio('item', ['./assets/sound/item.ogg', './assets/sound/item.mp3']);
+    this.load.audio('enemy-death', ['./assets/sound/enemy-death.ogg', './assets/sound/enemy-death.mp3']);
   }
 
   loadMaps() {
-    this.load.image('tileset', './src/assets/environment/tileset.png');
-    this.load.image('objects', './src/assets/environment/objects.png');
-    this.load.image('collisions', './src/assets/environment/collisions.png');
-    this.load.tilemapTiledJSON('map', './src/assets/maps/map.json');
-    this.load.atlas('atlas', './src/assets/atlas/atlas.png', './src/assets/atlas/atlas.json');
-    this.load.atlas('atlas-props', './src/assets/atlas/atlas-props.png', './src/assets/atlas/atlas-props.json');
+    this.load.image('tileset', './assets/environment/tileset.png');
+    this.load.image('objects', './assets/environment/objects.png');
+    this.load.image('collisions', './assets/environment/collisions.png');
+    this.load.tilemapTiledJSON('map', './assets/maps/map.json');
+    this.load.atlas('atlas', './assets/atlas/atlas.png', './assets/atlas/atlas.json');
+    this.load.atlas('atlas-props', './assets/atlas/atlas-props.png', './assets/atlas/atlas-props.json');
   }
 }
