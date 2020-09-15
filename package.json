@@ -35,6 +35,7 @@
     "jest": "^26.4.0"
   },
   "dependencies": {
+    "core-js": "^3.6.5",
     "phaser": "^3.24.1"
   }
 }
