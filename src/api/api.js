@@ -1,8 +1,8 @@
-const baseUrl = 'https://us-central1-js-capstone-backend.cloudfunctions.net/api';
+const Url = 'https://us-central1-js-capstone-backend.cloudfunctions.net/api';
 const gameId = 'CDnCLHDcJCsfrdRyzYcI';
 
 export const postScore = async (name, score) => {
-  const response = await fetch(`${baseUrl}/games/${gameId}/scores`, {
+  const response = await fetch(`${Url}/games/${gameId}/scores`, {
     method: 'POST',
     mode: 'cors',
     headers: {
@@ -12,14 +12,13 @@ export const postScore = async (name, score) => {
     body: JSON.stringify({ user: name, score: Number(score) }),
   });
   if (response.ok) {
-    // console.log(response.json());
     return response.json();
   }
-  throw new Error('Something went wrong!');
+  throw new Error('Posting score was unsuccessful!');
 };
 
 export const getScores = async () => {
-  const response = await fetch(`${baseUrl}/games/${gameId}/scores`, {
+  const response = await fetch(`${Url}/games/${gameId}/scores`, {
     method: 'Get',
     mode: 'cors',
     headers: {
@@ -28,8 +27,7 @@ export const getScores = async () => {
     },
   });
   if (response.ok) {
-    // console.log(response.json());
     return response.json();
   }
-  throw new Error('Something went wrong!');
+  throw new Error('Getting leaderboard data was unsuccessfful');
 };
