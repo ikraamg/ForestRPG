@@ -87,7 +87,7 @@ export default class GameScene extends Phaser.Scene {
       fontFamily: 'monospace',
       fontSize: 8,
       fontStyle: 'bold',
-      color: '#00000',
+      color: '#FFFFFF',
       align: 'center',
     };
 
