@@ -6,7 +6,6 @@ import MenuScene from './scenes/MenuScene';
 import GameScene from './scenes/GameScene';
 import GameOverScene from './scenes/GameOverScene';
 
-
 const config = {
   type: Phaser.AUTO,
   parent: 'game',
