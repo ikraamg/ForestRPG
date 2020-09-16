@@ -8,7 +8,7 @@ export default class Arrow extends Phaser.Physics.Arcade.Sprite {
 
     scene.physics.world.enableBody(this);
     const vel = 270;
-    switch (scene.player.direction) {
+    switch (scene.player.playerModel.direction) {
       case 'up':
         this.body.velocity.y = -vel;
         break;

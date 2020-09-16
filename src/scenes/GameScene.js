@@ -109,19 +109,19 @@ export default class GameScene extends Phaser.Scene {
     const velocity = 50;
     if (this.cursors.right.isDown) {
       this.player.setVelocity(velocity, 0);
-      this.player.direction = 'right';
+      this.player.playerModel.direction = 'right';
     }
     if (this.cursors.left.isDown) {
       this.player.setVelocity(-velocity, 0);
-      this.player.direction = 'left';
+      this.player.playerModel.direction = 'left';
     }
     if (this.cursors.up.isDown) {
       this.player.setVelocity(0, -velocity);
-      this.player.direction = 'up';
+      this.player.playerModel.direction = 'up';
     }
     if (this.cursors.down.isDown) {
       this.player.setVelocity(0, velocity);
-      this.player.direction = 'down';
+      this.player.playerModel.direction = 'down';
     }
 
     if (Phaser.Input.Keyboard.JustDown(this.cursors.space)) {
@@ -129,17 +129,17 @@ export default class GameScene extends Phaser.Scene {
       const shot = new Arrow(this);
       this.projectilesGroup.add(shot);
       this.audioSlash.play();
-      this.player.shots += 1;
-      this.shotDisplay.setText(`SHOTS: ${this.player.shots}`);
+      this.player.playerModel.shots += 1;
+      this.shotDisplay.setText(`SHOTS: ${this.player.playerModel.shots}`);
     }
   }
 
   scoreManager(time) {
     const timeCount = Math.round(((time - this.startTime) / 1000) - 5);
-    this.player.scoreCalc = (this.player.health * 200 + this.player.kills * 100
-      - this.player.shots * 10 - timeCount * 2);
+    this.player.playerModel.scoreCalc = (this.player.playerModel.health * 200 + this.player.playerModel.kills * 100
+      - this.player.playerModel.shots * 10 - timeCount * 2);
     this.timeDisplay.setText(`TIME: ${timeCount}`);
-    this.scoreDisplay.setText(`SCORE: ${this.player.scoreCalc}`);
+    this.scoreDisplay.setText(`SCORE: ${this.player.playerModel.scoreCalc}`);
   }
 
   interactionManager() {
@@ -153,23 +153,23 @@ export default class GameScene extends Phaser.Scene {
   shotImpact(enemy, shot) {
     enemy.destroy();
     shot.destroy();
-    this.player.kills += 1;
+    this.player.playerModel.kills += 1;
     this.audioEnemyDeath.play();
 
-    if (this.player.kills > 5) {
+    if (this.player.playerModel.kills > 5) {
       this.physics.world.enableBody(this.exit);
       this.exit.alpha = 1;
     }
-    this.killDisplay.setText(`KILLS: ${this.player.kills}`);
+    this.killDisplay.setText(`KILLS: ${this.player.playerModel.kills}`);
   }
 
   resetHurtTime() {
-    this.player.hurtFlag = false;
+    this.player.playerModel.hurtFlag = false;
     this.player.alpha = 1;
   }
 
   updateHealthDisplay() {
-    switch (this.player.health) {
+    switch (this.player.playerModel.health) {
       case 2:
         this.hp3.setTexture('atlas', 'hearts/hearts-2', false);
         break;
@@ -184,11 +184,11 @@ export default class GameScene extends Phaser.Scene {
   }
 
   hurtPlayer(player) {
-    if (player.hurtFlag) {
+    if (player.playerModel.hurtFlag) {
       return;
     }
 
-    player.hurtFlag = true;
+    player.playerModel.hurtFlag = true;
     this.time.addEvent({
       delay: 2000,
       callback: this.resetHurtTime,
@@ -196,18 +196,18 @@ export default class GameScene extends Phaser.Scene {
     });
 
     player.alpha = 0.5;
-    player.health -= 1;
+    player.playerModel.health -= 1;
     this.updateHealthDisplay();
     this.audioHurt.play();
 
-    if (player.health < 1) {
-      this.player.scoreCalc -= 200;
+    if (player.playerModel.health < 1) {
+      this.player.playerModel.scoreCalc -= 200;
       this.gameOver();
     }
   }
 
   gameOver() {
-    this.scene.start('GameOverScene', { score: this.player.scoreCalc });
+    this.scene.start('GameOverScene', { score: this.player.playerModel.scoreCalc });
   }
 
   updateHud() {

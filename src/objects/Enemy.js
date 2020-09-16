@@ -11,11 +11,11 @@ export default class Enemies extends Phaser.Physics.Arcade.Sprite {
     this.setCollideWorldBounds(true);
     this.body.bounce.x = 1;
     this.body.bounce.y = 1;
-    this.speed = 60;
+    const speed = 60;
     if (verticalMove) {
-      this.body.velocity.y = this.speed;
+      this.body.velocity.y = speed;
     } else {
-      this.body.velocity.x = this.speed;
+      this.body.velocity.x = speed;
     }
   }
 }
