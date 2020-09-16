@@ -136,7 +136,8 @@ export default class GameScene extends Phaser.Scene {
 
   scoreManager(time) {
     const timeCount = Math.round(((time - this.startTime) / 1000) - 5);
-    this.player.playerModel.scoreCalc = (this.player.playerModel.health * 200 + this.player.playerModel.kills * 100
+    this.player.playerModel.scoreCalc = (this.player.playerModel.health * 200
+      + this.player.playerModel.kills * 100
       - this.player.playerModel.shots * 10 - timeCount * 2);
     this.timeDisplay.setText(`TIME: ${timeCount}`);
     this.scoreDisplay.setText(`SCORE: ${this.player.playerModel.scoreCalc}`);
