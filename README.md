@@ -25,11 +25,10 @@
 <br />
 <p align="center">
   <a href="git@github.com:ikraamg/ForestRPG.git">
-    <p align="center"> <img src="" alt="ForestRPG" width="600" height="400"> </p>
+    <p align="center"> <img src="./assets/sprites/logo.png" alt="ForestRPG" height="200"> </p>
   </a>
 
-  <h2 align="center">ForestRPG Game</h2>
-  <h3 align="center">A RPG Game developed in JavaScript with Phaser library </h3>
+  <h3 align="center">A RPG Game developed in JavaScript with Phaser 3 library </h3>
 
   <p align="center">
     <a href="https://github.com/ikraamg/ForestRPG/issues">Report Bug</a>
@@ -54,13 +53,13 @@
 
 In this project, a 2D RPG game in JavaScript was built with the help of Phaser library.
 
-The main character needs to kill enemies as quickly as possible with the least amount of arrows to open the exit door(6 minimum) and get a high score.
-
 An external api service is used to store the player names and scores. Top 5 players are displayed in game leaderboard.
 
 <!-- CONTROL'S -->
 
 ## How to play
+
+The main character needs to kill enemies as quickly as possible with the least amount of arrows to open the exit door(6 minimum) and get a high score.
 
 ### Control's
 
@@ -70,13 +69,13 @@ An external api service is used to store the player names and scores. Top 5 play
 - (↓) down arrow key => Move down
 - (Space) key => Attack enemy
 
-<p align="center"> <img src="https://user-images.githubusercontent.com/34813339/93250228-ccb63300-f792-11ea-8c15-1abf99f364b7.png" alt="ForestRPG Game" width="100%"> </p>
+<p align="center"> <img src="https://user-images.githubusercontent.com/34813339/93250228-ccb63300-f792-11ea-8c15-1abf99f364b7.png" alt="ForestRPG Game" width="700"> </p>
 
 <!-- Live Link  -->
 
 ## Live Link
 
-[Click here](https://raw.githack.com/ikraamg/ForestRPG/game-feature/dist/index.html)
+[Click here](http://ikraamghoor.com/ForestRPG/)
 
 <!-- INSTALLATION -->
 
@@ -94,7 +93,7 @@ npm install
 npm run start
 ```
 
-Now go to [localhost:8000](http://localhost:8080) in your browser.
+Now go to [localhost:8000](http://localhost:8000) in your browser.
 
 ##### Test with
 
@@ -122,30 +121,34 @@ npm run test
 
 ## Game Design
 
-The game uses high-quality assets to bring all scenes to life.
+This game has 3 main assets that bring it to life:
+
+1. The hero
+
+<p align="center"> <img src="https://user-images.githubusercontent.com/34813339/93326758-9ec80180-f819-11ea-8901-40fe9f66c95e.png" alt="Hero" width="100">
+
+1. The map assets:
+
+<p align="center"> <img src="./assets/environment/tileset.png" alt="Map" width="300">
+
+3. The Enemies (Moles and Treants):
+
+<p align="center"> <img src="https://user-images.githubusercontent.com/34813339/93326875-ccad4600-f819-11ea-920c-793bb9618e98.png" alt="Enemies" width="100">
+<p align="center"> <img src="https://user-images.githubusercontent.com/34813339/93326910-ddf65280-f819-11ea-801c-a386ceaec793.png" alt="Enemies" width="100">
 
 <!-- game play -->
 
 ## Game Play
 
-<p align="center"> <img src="https://user-images.githubusercontent.com/34813339/93250526-3c2c2280-f793-11ea-9c66-a053e4e0a1c1.png" alt="ForestRPG Game" width="100%"> </p>
+You are a hero in a Fantasy Forest World where nuclear waste has created made trees walk around and turned moles into large beasts. The Treants and Moles are preventing you from continuing on your jouney to find other humans. Once you have killed atleast 6 enemies a mountain door open so you can continue to find a cure for this chaos. The faster you get kills, the higher the chances of you finding a cure.
 
-### Leaderboard
+You (and your 3 lives) head to the forest, armed with a bow and arrows to kill the enemies as quickly as possible. Ammo costs points so try to use as little as possible.
 
-![leaderboard]()
+Any contact with an enemy is deadly and you lose a life. Try to kill as many enemies as possible before exiting the area through the mountain door to get the highest score.
 
-<!-- Game development -->
+Don't forget to post your score to the global leaderboard!
 
-## Game development
-
-| DAYS  |          OBJECTIVE           |                                                                  DESCRIPTION                                                                  |                                     OUTCOME                                      | STATUS  |
-| :---- | :--------------------------: | :-------------------------------------------------------------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------: | :-----: |
-| Day 1 |       Learning Phaser        |                                  I read the project requirements and started learning about Phaser library.                                   |            By the end of the day, I had good understanding of Phaser.            | &#9745; |
-| Day 2 |         Game Design          | During the 1st half of day, I continue learned the phaser library. In the 2nd half I prepared the basic game template and the design of game. |         By the end of day I had designed the game and basic UI for game.         | &#9745; |
-| Day 3 |       Game Development       |                                      I spent the entire day to write the actual code for game and logic                                       | By the end of the day, I had developed the interactive game play with some bugs. | &#9745; |
-| Day 4 | Game Development and Testing |                        I spent this day to fix the bugs in gameplay, added leaderboard api and wrote unit test cases.                         |              By the end of the day, I had an Interactive game play.              | &#9745; |
-
-<!-- potential future updates -->
+<p align="center"> <img src="https://user-images.githubusercontent.com/34813339/93250526-3c2c2280-f793-11ea-9c66-a053e4e0a1c1.png" alt="ForestRPG Game" width="700"> </p>
 
 # Potential Future Updates
 
