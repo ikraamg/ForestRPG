@@ -1,32 +1,45 @@
-import Phaser from "phaser";
-import logoImg from "./assets/logo.png";
+/* eslint-disable no-use-before-define */
+import Phaser from 'phaser';
+import BootScene from './scenes/BootScene';
+import LoadScene from './scenes/LoadScene';
+import MenuScene from './scenes/MenuScene';
+import GameScene from './scenes/GameScene';
+import GameOverScene from './scenes/GameOverScene';
+import LeaderBoardScene from './scenes/LeaderBoardScene';
+import GuideScene from './scenes/GuideScene';
+import CreditsScene from './scenes/CreditsScene';
+
 
 const config = {
   type: Phaser.AUTO,
-  parent: "phaser-example",
+  parent: 'game',
   width: 800,
   height: 600,
-  scene: {
-    preload: preload,
-    create: create
-  }
+  pixelArt: true,
+  scale: {
+    autoCenter: Phaser.Scale.CENTER_BOTH,
+  },
+  dom: {
+    createContainer: true,
+  },
+  roundPixels: true,
+  physics: {
+    default: 'arcade',
+    arcade: {
+      debug: false,
+    },
+  },
+  scene: [
+    BootScene,
+    LoadScene,
+    MenuScene,
+    CreditsScene,
+    GuideScene,
+    GameScene,
+    GameOverScene,
+    LeaderBoardScene,
+  ],
 };
 
 const game = new Phaser.Game(config);
-
-function preload() {
-  this.load.image("logo", logoImg);
-}
-
-function create() {
-  const logo = this.add.image(400, 150, "logo");
-
-  this.tweens.add({
-    targets: logo,
-    y: 450,
-    duration: 2000,
-    ease: "Power2",
-    yoyo: true,
-    loop: -1
-  });
-}
+game.config.musicStatus = true;

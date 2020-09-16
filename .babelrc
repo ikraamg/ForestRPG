@@ -1,14 +1,11 @@
 {
   "presets": [
-    ["@babel/env", {
-      "targets": {
-        "browsers": [
-          ">0.25%",
-          "not ie 11",
-          "not op_mini all"
-        ]
-      },
-      "modules": false
-    }]
-  ],
+    [
+      "@babel/preset-env",
+      {
+        "useBuiltIns": "usage", // or "entry"
+        "corejs": 3
+      }
+    ]
+  ]
 }
