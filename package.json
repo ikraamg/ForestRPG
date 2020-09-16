@@ -1,45 +1,47 @@
 {
-  "name": "phaser3-rpg-game",
+  "name": "ForestRPG",
   "version": "1.1.0",
-  "description": "A Phaser 3 RPG Game",
+  "description": "A RPG Game",
   "main": "src/index.js",
   "scripts": {
-    "build": "webpack --config webpack/prod.js ",
-    "start": "webpack-dev-server --config webpack/base.js --open",
+    "build": "webpack",
+    "start": "npm run build && webpack-dev-server --port=8000",
     "test": "jest"
   },
   "repository": {
     "type": "git",
-    "url": "git+"
+    "url": "git+https://github.com/ikraamg/ForestRPG.git"
   },
-  "author": "Ikraam Ghoor",
+  "author": "Ikraam Ghoor <ikraamghoor@gmail.com> (http://www.ikraamghoor.com)",
   "license": "MIT",
   "licenseUrl": "http://www.opensource.org/licenses/mit-license.php",
-  "homepage": "https://github.com/",
+  "bugs": {
+    "url": "https://github.com/ikraamg/ForestRPG/issues"
+  },
+  "homepage": "https://github.com/ikraamg/ForestRPG",
   "devDependencies": {
-    "@babel/core": "^7.11.6",
-    "@babel/preset-env": "^7.11.5",
-    "babel-loader": "^8.1.0",
-    "canvas": "^2.6.1",
+    "@babel/core": "^7.7.2",
+    "@babel/preset-env": "^7.7.1",
+    "babel-loader": "^8.0.6",
+    "clean-webpack-plugin": "^3.0.0",
     "eslint": "^6.8.0",
     "eslint-config-airbnb-base": "^14.1.0",
     "eslint-plugin-import": "^2.20.2",
-    "file-loader": "^4.3.0",
-    "jest": "^26.4.0",
+    "file-loader": "^4.2.0",
+    "html-webpack-plugin": "^3.2.0",
+    "jest": "^26.4.2",
     "raw-loader": "^3.1.0",
     "stylelint": "^13.3.3",
     "stylelint-config-standard": "^20.0.0",
     "stylelint-csstree-validator": "^1.8.0",
     "stylelint-scss": "^3.17.2",
-    "webpack-cli": "^3.3.12",
-    "webpack-dev-server": "^3.11.0"
+    "terser-webpack-plugin": "^2.2.1",
+    "webpack": "^4.41.2",
+    "webpack-cli": "^3.3.10",
+    "webpack-dev-server": "^3.11.0",
+    "webpack-merge": "^4.2.2"
   },
   "dependencies": {
-    "webpack-merge": "^4.2.2",
-    "clean-webpack-plugin": "^3.0.0",
-    "html-webpack-plugin": "^3.2.0",
-    "terser-webpack-plugin": "^2.3.8",
-    "webpack": "^4.44.1",
     "core-js": "^3.6.5",
     "phaser": "^3.24.1"
   }
