@@ -10,5 +10,11 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     this.setImmovable(true);
     this.setCollideWorldBounds(true);
     this.playerModel = new PlayerModel();
+    this.frameMap = {
+      up: 'idle/hero-idle-back/hero-idle-back',
+      down: 'idle/hero-idle-front/hero-idle-front',
+      left: 'idle/hero-idle-side/hero-idle-side',
+      right: 'idle/hero-idle-side/hero-idle-side',
+    };
   }
 }

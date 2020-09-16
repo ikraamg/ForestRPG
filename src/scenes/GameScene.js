@@ -18,6 +18,7 @@ export default class GameScene extends Phaser.Scene {
     this.bindKeys();
     this.createHud();
     this.createCamera();
+    this.createAnims();
     this.startTime = this.time.now;
   }
 
@@ -27,6 +28,7 @@ export default class GameScene extends Phaser.Scene {
     this.scoreManager(time);
     this.updateHud();
     this.destroyArrows();
+    this.animateEnemies();
   }
 
   // CREATE FUNCTIONS
@@ -103,25 +105,150 @@ export default class GameScene extends Phaser.Scene {
     this.cameras.main.startFollow(this.player);
   }
 
+  createAnims() {
+    this.anims.create({
+      key: 'walk-back',
+      frames: this.anims.generateFrameNames('atlas', {
+        prefix: 'walk/hero-walk-back/hero-walk-back-',
+        suffix: '',
+        start: 1,
+        end: 6,
+      }),
+      frameRate: 6,
+      repeat: true,
+    });
+
+    this.anims.create({
+      key: 'walk-front',
+      frames: this.anims.generateFrameNames('atlas', {
+        prefix: 'walk/hero-walk-front/hero-walk-front-',
+        suffix: '',
+        start: 1,
+        end: 6,
+      }),
+      frameRate: 6,
+      repeat: true,
+    });
+
+    this.anims.create({
+      key: 'walk-side',
+      frames: this.anims.generateFrameNames('atlas', {
+        prefix: 'walk/hero-walk-side/hero-walk-side-',
+        suffix: '',
+        start: 1,
+        end: 6,
+      }),
+      frameRate: 6,
+      repeat: true,
+    });
+
+    this.anims.create({
+      key: 'mole-back',
+      frames: this.anims.generateFrameNames('atlas', {
+        prefix: 'walk/mole-walk-back/mole-walk-back-',
+        suffix: '',
+        start: 1,
+        end: 6,
+      }),
+      frameRate: 6,
+      repeat: true,
+    });
+
+    this.anims.create({
+      key: 'mole-front',
+      frames: this.anims.generateFrameNames('atlas', {
+        prefix: 'walk/mole-walk-front/mole-walk-front-',
+        suffix: '',
+        start: 1,
+        end: 6,
+      }),
+      frameRate: 6,
+      repeat: true,
+    });
+
+    this.anims.create({
+      key: 'mole-side',
+      frames: this.anims.generateFrameNames('atlas', {
+        prefix: 'walk/mole-walk-side/mole-walk-side-',
+        suffix: '',
+        start: 1,
+        end: 6,
+      }),
+      frameRate: 6,
+      repeat: true,
+    });
+
+    this.anims.create({
+      key: 'tree-back',
+      frames: this.anims.generateFrameNames('atlas', {
+        prefix: 'walk/treant-walk-back/treant-walk-back-',
+        suffix: '',
+        start: 1,
+        end: 6,
+      }),
+      frameRate: 6,
+      repeat: true,
+    });
+
+    this.anims.create({
+      key: 'tree-front',
+      frames: this.anims.generateFrameNames('atlas', {
+        prefix: 'walk/treant-walk-front/treant-walk-front-',
+        suffix: '',
+        start: 1,
+        end: 6,
+      }),
+      frameRate: 6,
+      repeat: true,
+    });
+
+    this.anims.create({
+      key: 'tree-side',
+      frames: this.anims.generateFrameNames('atlas', {
+        prefix: 'walk/treant-walk-side/treant-walk-side-',
+        suffix: '',
+        start: 1,
+        end: 6,
+      }),
+      frameRate: 6,
+      repeat: true,
+    });
+  }
+
   // UPDATE FUNCTIONS
   inputManager() {
-    this.player.setVelocity(0);
     const velocity = 50;
+    this.player.walking = false;
     if (this.cursors.right.isDown) {
+      this.player.walking = true;
       this.player.setVelocity(velocity, 0);
       this.player.playerModel.direction = 'right';
-    }
+      this.player.play('walk-side', true);
+      this.player.setFlipX(false);
+    } else
     if (this.cursors.left.isDown) {
+      this.player.walking = true;
       this.player.setVelocity(-velocity, 0);
       this.player.playerModel.direction = 'left';
-    }
+      this.player.play('walk-side', true);
+      this.player.setFlipX(true);
+    } else
     if (this.cursors.up.isDown) {
+      this.player.walking = true;
       this.player.setVelocity(0, -velocity);
       this.player.playerModel.direction = 'up';
-    }
+      this.player.play('walk-back', true);
+    } else
     if (this.cursors.down.isDown) {
+      this.player.walking = true;
       this.player.setVelocity(0, velocity);
       this.player.playerModel.direction = 'down';
+      this.player.play('walk-front', true);
+    } else if (!this.player.walking) {
+      this.player.setVelocity(0);
+      this.player.setFrame(this.player.frameMap[this.player.playerModel.direction]);
+      // eslint-disable-next-line no-unused-expressions
+      this.player.playerModel.direction === 'left' ? this.player.setFlipX(true) : this.player.setFlipX(false);
     }
 
     if (Phaser.Input.Keyboard.JustDown(this.cursors.space)) {
@@ -237,6 +364,23 @@ export default class GameScene extends Phaser.Scene {
       treant.setSize(10, 10, 7, 12);
       this.enemiesGroup.add(treant).setDepth(1);
     });
+  }
+
+  animateEnemies() {
+    for (let i = 0; i < this.enemiesGroup.getChildren().length; i += 1) {
+      const enemy = this.enemiesGroup.getChildren()[i];
+      if (enemy.body.velocity.x > 0) {
+        enemy.play('tree-side', true);
+        enemy.setFlipX(false);
+      } else if (enemy.body.velocity.x < 0) {
+        enemy.play('tree-side', true);
+        enemy.setFlipX(true);
+      } else if (enemy.body.velocity.y < 0) {
+        enemy.play('mole-back', true);
+      } else if (enemy.body.velocity.y > 0) {
+        enemy.play('mole-front', true);
+      }
+    }
   }
 
   destroyArrows() {
