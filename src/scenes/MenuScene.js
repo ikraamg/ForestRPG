@@ -27,14 +27,12 @@ export default class MenuScene extends Phaser.Scene {
       'A Phaser 3 Game by Ikraam Ghoor', textConfig);
     this.add.text(80, 544,
       "Press 'M' to toggle mute and 'C' for credits", textConfig);
-
-    this.menuKeys = this.input.keyboard.addKeys('enter, m, c');
+    this.add.text(150, 500,
+      "Press 'L' to access the leaderboard", textConfig);
+    this.menuKeys = this.input.keyboard.addKeys('enter, m, c, l');
   }
 
   update() {
-    if (Phaser.Input.Keyboard.JustDown(this.menuKeys.enter)) {
-      this.scene.start('GuideScene');
-    }
     if (Phaser.Input.Keyboard.JustDown(this.menuKeys.c)) {
       this.scene.start('CreditsScene');
     }
@@ -43,6 +41,14 @@ export default class MenuScene extends Phaser.Scene {
       this.game.config.musicStatus = !this.game.config.musicStatus;
       this.game.config.musicStatus ? this.mute.setAlpha(0) : this.mute.setAlpha(1);
       this.game.config.musicStatus ? this.soundtrack.play() : this.soundtrack.stop();
+    }
+
+    if (Phaser.Input.Keyboard.JustDown(this.menuKeys.l)) {
+      this.scene.start('LeaderBoardScene');
+    }
+
+    if (Phaser.Input.Keyboard.JustDown(this.menuKeys.enter)) {
+      this.scene.start('GuideScene');
     }
   }
 }
