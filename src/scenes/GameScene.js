@@ -92,10 +92,14 @@ export default class GameScene extends Phaser.Scene {
     objectLayer.objects
       .filter((obj) => obj.gid === gid)
       .forEach((obj) => {
-        // Tiled tile objects use bottom-left origin; convert to top-left tile coords.
-        const tileX = obj.x / TILE_SIZE;
-        const tileY = (obj.y - (obj.height || TILE_SIZE)) / TILE_SIZE;
-        const enemy = new Enemy(this, tileX, tileY, verticalMove, idleFrame);
+        // Match legacy placement: Tiled object x/y → tile coords → world pixels.
+        const enemy = new Enemy(
+          this,
+          obj.x / TILE_SIZE,
+          obj.y / TILE_SIZE,
+          verticalMove,
+          idleFrame,
+        );
         enemy.setSize(10, 10);
         enemy.setDepth(1);
         this.enemiesGroup.add(enemy);
