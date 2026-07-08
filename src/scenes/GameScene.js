@@ -2,6 +2,19 @@ import Phaser from 'phaser';
 import Arrow from '../objects/Arrow';
 import Player from '../objects/Player';
 import Enemy from '../objects/Enemy';
+import { createGameAnimations } from '../game/animations';
+import {
+  DIRECTIONS,
+  HURT_INVULN_MS,
+  KILLS_TO_OPEN_EXIT,
+  PLAYER_SPEED,
+  SCORE_TIME_OFFSET_SEC,
+  TILE_SIZE,
+} from '../config/constants';
+import { hudStyle } from '../ui/textStyles';
+
+const MOLE_GID = 6;
+const TREANT_GID = 5;
 
 export default class GameScene extends Phaser.Scene {
   constructor() {
@@ -13,25 +26,26 @@ export default class GameScene extends Phaser.Scene {
     this.createMap();
     this.createGroups();
     this.createExit();
-    this.populate();
+    this.populateEnemies();
     this.createPlayer();
     this.bindKeys();
     this.createHud();
     this.createCamera();
-    this.createAnims();
+    createGameAnimations(this);
     this.startTime = this.time.now;
   }
 
   update(time) {
-    this.inputManager();
-    this.interactionManager();
-    this.scoreManager(time);
+    this.handlePlayerInput();
+    this.handleCollisions();
+    this.updateScore(time);
     this.updateHud();
-    this.destroyArrows();
+    this.cullOffscreenArrows();
     this.animateEnemies();
   }
 
-  // CREATE FUNCTIONS
+  // --- Setup ---------------------------------------------------------------
+
   addAudios() {
     this.audioHurt = this.sound.add('hurt');
     this.audioItem = this.sound.add('item');
@@ -41,17 +55,18 @@ export default class GameScene extends Phaser.Scene {
 
   createMap() {
     const map = this.make.tilemap({ key: 'map' });
-    const terrainset = map.addTilesetImage('tileset');
-    const objectsset = map.addTilesetImage('objects');
+    const terrain = map.addTilesetImage('tileset');
+    const objects = map.addTilesetImage('objects');
     const collisions = map.addTilesetImage('collisions');
-    map.createStaticLayer('Tile Layer', [objectsset, terrainset]);
-    map.createStaticLayer('Tile Layer 2', [objectsset, terrainset]);
-    this.colLayer = map.createStaticLayer('Collisions Layer', [collisions]);
-    this.colLayer.visible = false;
+
+    map.createLayer('Tile Layer', [objects, terrain]);
+    map.createLayer('Tile Layer 2', [objects, terrain]);
+
+    this.colLayer = map.createLayer('Collisions Layer', [collisions]);
+    this.colLayer.setVisible(false);
     map.setCollision([0, 1]);
 
-    this.physics.world.bounds.width = map.widthInPixels;
-    this.physics.world.bounds.height = map.heightInPixels;
+    this.physics.world.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
     this.map = map;
   }
 
@@ -61,19 +76,35 @@ export default class GameScene extends Phaser.Scene {
   }
 
   createExit() {
-    this.exit = this.add.sprite(47.5 * 16, 28.5 * 16, 'exit');
-    this.exit.alpha = 0;
+    this.exit = this.add.sprite(47.5 * TILE_SIZE, 28.5 * TILE_SIZE, 'exit');
+    this.exit.setAlpha(0);
   }
 
-  populate() {
-    this.createMoles();
-    this.createTreants();
+  populateEnemies() {
+    this.spawnEnemiesByGid(MOLE_GID, true, 'idle/mole-idle-front');
+    this.spawnEnemiesByGid(TREANT_GID, false, 'idle/treant-idle-front');
+  }
+
+  spawnEnemiesByGid(gid, verticalMove, idleFrame) {
+    const objectLayer = this.map.getObjectLayer('Object Layer');
+    if (!objectLayer) return;
+
+    objectLayer.objects
+      .filter((obj) => obj.gid === gid)
+      .forEach((obj) => {
+        // Tiled tile objects use bottom-left origin; convert to top-left tile coords.
+        const tileX = obj.x / TILE_SIZE;
+        const tileY = (obj.y - (obj.height || TILE_SIZE)) / TILE_SIZE;
+        const enemy = new Enemy(this, tileX, tileY, verticalMove, idleFrame);
+        enemy.setSize(10, 10);
+        enemy.setDepth(1);
+        this.enemiesGroup.add(enemy);
+      });
   }
 
   createPlayer() {
     this.player = new Player(this, 48, 32, 'atlas', 'idle/hero-idle-back/hero-idle-back');
     this.player.setSize(8, 13);
-    this.add.existing(this.player);
   }
 
   bindKeys() {
@@ -81,256 +112,124 @@ export default class GameScene extends Phaser.Scene {
   }
 
   createHud() {
-    this.hp1 = this.add.sprite(this.player.x - 8, this.player.y - 12, 'atlas', 'hearts/hearts-1');
-    this.hp2 = this.add.sprite(this.player.x, this.player.y - 12, 'atlas', 'hearts/hearts-1');
-    this.hp3 = this.add.sprite(this.player.x + 8, this.player.y - 12, 'atlas', 'hearts/hearts-1');
+    const { x, y } = this.player;
 
-    const fontConfig = {
-      fontFamily: 'monospace',
-      fontSize: 8,
-      fontStyle: 'bold',
-      color: '#FFFFFF',
-      align: 'center',
-    };
+    this.hp1 = this.add.sprite(x - 8, y - 12, 'atlas', 'hearts/hearts-1');
+    this.hp2 = this.add.sprite(x, y - 12, 'atlas', 'hearts/hearts-1');
+    this.hp3 = this.add.sprite(x + 8, y - 12, 'atlas', 'hearts/hearts-1');
 
-    this.killDisplay = this.add.text(this.player.x - 110, this.player.y - 85, 'KILLS:', fontConfig);
-    this.shotDisplay = this.add.text(this.player.x - 50, this.player.y - 85, 'SHOTS:', fontConfig);
-    this.timeDisplay = this.add.text(this.player.x - 50, this.player.y - 85, 'TIME:', fontConfig);
-    this.scoreDisplay = this.add.text(this.player.x - 50, this.player.y - 85, 'SCORE:', fontConfig);
+    this.killDisplay = this.add.text(x - 110, y - 85, 'KILLS: 0', hudStyle);
+    this.shotDisplay = this.add.text(x - 50, y - 85, 'SHOTS: 0', hudStyle);
+    this.timeDisplay = this.add.text(x - 50, y - 85, 'TIME: 0', hudStyle);
+    this.scoreDisplay = this.add.text(x - 50, y - 85, 'SCORE: 0', hudStyle);
   }
 
   createCamera() {
-    this.cameras.main.roundPixels = true;
+    this.cameras.main.setRoundPixels(true);
     this.cameras.main.setZoom(3.5);
     this.cameras.main.startFollow(this.player);
   }
 
-  createAnims() {
-    this.anims.create({
-      key: 'walk-back',
-      frames: this.anims.generateFrameNames('atlas', {
-        prefix: 'walk/hero-walk-back/hero-walk-back-',
-        suffix: '',
-        start: 1,
-        end: 6,
-      }),
-      frameRate: 6,
-      repeat: true,
-    });
+  // --- Update loops --------------------------------------------------------
 
-    this.anims.create({
-      key: 'walk-front',
-      frames: this.anims.generateFrameNames('atlas', {
-        prefix: 'walk/hero-walk-front/hero-walk-front-',
-        suffix: '',
-        start: 1,
-        end: 6,
-      }),
-      frameRate: 6,
-      repeat: true,
-    });
+  handlePlayerInput() {
+    const { player, cursors } = this;
+    const model = player.playerModel;
+    player.walking = false;
 
-    this.anims.create({
-      key: 'walk-side',
-      frames: this.anims.generateFrameNames('atlas', {
-        prefix: 'walk/hero-walk-side/hero-walk-side-',
-        suffix: '',
-        start: 1,
-        end: 6,
-      }),
-      frameRate: 6,
-      repeat: true,
-    });
-
-    this.anims.create({
-      key: 'mole-back',
-      frames: this.anims.generateFrameNames('atlas', {
-        prefix: 'walk/mole-walk-back/mole-walk-back-',
-        suffix: '',
-        start: 1,
-        end: 6,
-      }),
-      frameRate: 6,
-      repeat: true,
-    });
-
-    this.anims.create({
-      key: 'mole-front',
-      frames: this.anims.generateFrameNames('atlas', {
-        prefix: 'walk/mole-walk-front/mole-walk-front-',
-        suffix: '',
-        start: 1,
-        end: 6,
-      }),
-      frameRate: 6,
-      repeat: true,
-    });
-
-    this.anims.create({
-      key: 'mole-side',
-      frames: this.anims.generateFrameNames('atlas', {
-        prefix: 'walk/mole-walk-side/mole-walk-side-',
-        suffix: '',
-        start: 1,
-        end: 6,
-      }),
-      frameRate: 6,
-      repeat: true,
-    });
-
-    this.anims.create({
-      key: 'tree-back',
-      frames: this.anims.generateFrameNames('atlas', {
-        prefix: 'walk/treant-walk-back/treant-walk-back-',
-        suffix: '',
-        start: 1,
-        end: 6,
-      }),
-      frameRate: 6,
-      repeat: true,
-    });
-
-    this.anims.create({
-      key: 'tree-front',
-      frames: this.anims.generateFrameNames('atlas', {
-        prefix: 'walk/treant-walk-front/treant-walk-front-',
-        suffix: '',
-        start: 1,
-        end: 6,
-      }),
-      frameRate: 6,
-      repeat: true,
-    });
-
-    this.anims.create({
-      key: 'tree-side',
-      frames: this.anims.generateFrameNames('atlas', {
-        prefix: 'walk/treant-walk-side/treant-walk-side-',
-        suffix: '',
-        start: 1,
-        end: 6,
-      }),
-      frameRate: 6,
-      repeat: true,
-    });
-  }
-
-  // UPDATE FUNCTIONS
-  inputManager() {
-    const velocity = 50;
-    this.player.walking = false;
-    if (this.cursors.right.isDown) {
-      this.player.walking = true;
-      this.player.setVelocity(velocity, 0);
-      this.player.playerModel.direction = 'right';
-      this.player.play('walk-side', true);
-      this.player.setFlipX(false);
-    } else
-    if (this.cursors.left.isDown) {
-      this.player.walking = true;
-      this.player.setVelocity(-velocity, 0);
-      this.player.playerModel.direction = 'left';
-      this.player.play('walk-side', true);
-      this.player.setFlipX(true);
-    } else
-    if (this.cursors.up.isDown) {
-      this.player.walking = true;
-      this.player.setVelocity(0, -velocity);
-      this.player.playerModel.direction = 'up';
-      this.player.play('walk-back', true);
-    } else
-    if (this.cursors.down.isDown) {
-      this.player.walking = true;
-      this.player.setVelocity(0, velocity);
-      this.player.playerModel.direction = 'down';
-      this.player.play('walk-front', true);
-    } else if (!this.player.walking) {
-      this.player.setVelocity(0);
-      this.player.setFrame(this.player.frameMap[this.player.playerModel.direction]);
-      // eslint-disable-next-line no-unused-expressions
-      this.player.playerModel.direction === 'left' ? this.player.setFlipX(true) : this.player.setFlipX(false);
+    if (cursors.right.isDown) {
+      this.movePlayer(PLAYER_SPEED, 0, DIRECTIONS.RIGHT, 'walk-side', false);
+    } else if (cursors.left.isDown) {
+      this.movePlayer(-PLAYER_SPEED, 0, DIRECTIONS.LEFT, 'walk-side', true);
+    } else if (cursors.up.isDown) {
+      this.movePlayer(0, -PLAYER_SPEED, DIRECTIONS.UP, 'walk-back', false);
+    } else if (cursors.down.isDown) {
+      this.movePlayer(0, PLAYER_SPEED, DIRECTIONS.DOWN, 'walk-front', false);
+    } else {
+      player.setVelocity(0);
+      player.setFrame(player.frameMap[model.direction]);
+      player.setFlipX(model.direction === DIRECTIONS.LEFT);
     }
 
-    if (Phaser.Input.Keyboard.JustDown(this.cursors.space)) {
-      this.player.setVelocity(0, 0);
+    if (Phaser.Input.Keyboard.JustDown(cursors.space)) {
+      player.setVelocity(0);
       const shot = new Arrow(this);
       this.projectilesGroup.add(shot);
       this.audioSlash.play();
-      this.player.playerModel.shots += 1;
-      this.shotDisplay.setText(`SHOTS: ${this.player.playerModel.shots}`);
+      model.shots += 1;
+      this.shotDisplay.setText(`SHOTS: ${model.shots}`);
     }
   }
 
-  scoreManager(time) {
-    const timeCount = Math.round(((time - this.startTime) / 1000) - 5);
-    this.player.playerModel.scoreCalc = (this.player.playerModel.health * 200
-      + this.player.playerModel.kills * 100
-      - this.player.playerModel.shots * 10 - timeCount * 2);
-    this.timeDisplay.setText(`TIME: ${timeCount}`);
-    this.scoreDisplay.setText(`SCORE: ${this.player.playerModel.scoreCalc}`);
+  movePlayer(vx, vy, direction, animKey, flipX) {
+    const { player } = this;
+    player.walking = true;
+    player.setVelocity(vx, vy);
+    player.playerModel.direction = direction;
+    player.play(animKey, true);
+    player.setFlipX(flipX);
   }
 
-  interactionManager() {
+  updateScore(time) {
+    const elapsed = Math.round(((time - this.startTime) / 1000) - SCORE_TIME_OFFSET_SEC);
+    const score = this.player.playerModel.calculateScore(elapsed);
+    this.timeDisplay.setText(`TIME: ${elapsed}`);
+    this.scoreDisplay.setText(`SCORE: ${score}`);
+  }
+
+  handleCollisions() {
     this.physics.collide(this.player, this.colLayer);
     this.physics.collide(this.enemiesGroup, this.colLayer);
     this.physics.overlap(this.player, this.enemiesGroup, this.hurtPlayer, null, this);
     this.physics.overlap(this.player, this.exit, this.gameOver, null, this);
-    this.physics.overlap(this.enemiesGroup, this.projectilesGroup, this.shotImpact, null, this);
+    this.physics.overlap(this.enemiesGroup, this.projectilesGroup, this.onEnemyHit, null, this);
   }
 
-  shotImpact(enemy, shot) {
+  onEnemyHit(enemy, shot) {
     enemy.destroy();
     shot.destroy();
-    this.player.playerModel.kills += 1;
+
+    const { playerModel } = this.player;
+    playerModel.kills += 1;
     this.audioEnemyDeath.play();
+    this.killDisplay.setText(`KILLS: ${playerModel.kills}`);
 
-    if (this.player.playerModel.kills > 5) {
+    if (playerModel.kills >= KILLS_TO_OPEN_EXIT) {
       this.physics.world.enableBody(this.exit);
-      this.exit.alpha = 1;
-    }
-    this.killDisplay.setText(`KILLS: ${this.player.playerModel.kills}`);
-  }
-
-  resetHurtTime() {
-    this.player.playerModel.hurtFlag = false;
-    this.player.alpha = 1;
-  }
-
-  updateHealthDisplay() {
-    switch (this.player.playerModel.health) {
-      case 2:
-        this.hp3.setTexture('atlas', 'hearts/hearts-2', false);
-        break;
-      case 1:
-        this.hp2.setTexture('atlas', 'hearts/hearts-2', false);
-        break;
-      case 0:
-        this.hp1.setTexture('atlas', 'hearts/hearts-2', false);
-        break;
-      default:
+      this.exit.setAlpha(1);
     }
   }
 
   hurtPlayer(player) {
-    if (player.playerModel.hurtFlag) {
-      return;
-    }
+    const { playerModel } = player;
+    if (playerModel.hurtFlag) return;
 
-    player.playerModel.hurtFlag = true;
-    this.time.addEvent({
-      delay: 2000,
-      callback: this.resetHurtTime,
-      callbackScope: this,
+    playerModel.hurtFlag = true;
+    this.time.delayedCall(HURT_INVULN_MS, () => {
+      playerModel.hurtFlag = false;
+      player.setAlpha(1);
     });
 
-    player.alpha = 0.5;
-    player.playerModel.health -= 1;
+    player.setAlpha(0.5);
+    playerModel.health -= 1;
     this.updateHealthDisplay();
     this.audioHurt.play();
 
-    if (player.playerModel.health < 1) {
-      this.player.playerModel.scoreCalc -= 200;
+    if (playerModel.health < 1) {
+      playerModel.scoreCalc -= 200;
       this.gameOver();
+    }
+  }
+
+  updateHealthDisplay() {
+    const frames = {
+      2: this.hp3,
+      1: this.hp2,
+      0: this.hp1,
+    };
+    const heart = frames[this.player.playerModel.health];
+    if (heart) {
+      heart.setTexture('atlas', 'hearts/hearts-2');
     }
   }
 
@@ -339,56 +238,38 @@ export default class GameScene extends Phaser.Scene {
   }
 
   updateHud() {
-    this.hp1.setPosition(this.player.x - 8, this.player.y - 12);
-    this.hp2.setPosition(this.player.x, this.player.y - 12);
-    this.hp3.setPosition(this.player.x + 8, this.player.y - 12);
-    this.killDisplay.setPosition(this.player.x - 110, this.player.y - 85);
-    this.shotDisplay.setPosition(this.player.x - 55, this.player.y - 85);
-    this.timeDisplay.setPosition(this.player.x - 5, this.player.y - 85);
-    this.scoreDisplay.setPosition(this.player.x + 45, this.player.y - 85);
-  }
-
-  createMoles() {
-    const enemiesArray = this.map.createFromObjects('Object Layer', 6, { key: 'atlas' }, this);
-    enemiesArray.forEach((enemy) => {
-      const mole = new Enemy(this, enemy.x / 16, enemy.y / 16, true, 'idle/mole-idle-front');
-      mole.setSize(10, 10, 7, 12);
-      this.enemiesGroup.add(mole).setDepth(1);
-    });
-  }
-
-  createTreants() {
-    const enemiesArray = this.map.createFromObjects('Object Layer', 5, { key: 'atlas' }, this);
-    enemiesArray.forEach((enemy) => {
-      const treant = new Enemy(this, enemy.x / 16, enemy.y / 16, false, 'idle/treant-idle-front');
-      treant.setSize(10, 10, 7, 12);
-      this.enemiesGroup.add(treant).setDepth(1);
-    });
+    const { x, y } = this.player;
+    this.hp1.setPosition(x - 8, y - 12);
+    this.hp2.setPosition(x, y - 12);
+    this.hp3.setPosition(x + 8, y - 12);
+    this.killDisplay.setPosition(x - 110, y - 85);
+    this.shotDisplay.setPosition(x - 55, y - 85);
+    this.timeDisplay.setPosition(x - 5, y - 85);
+    this.scoreDisplay.setPosition(x + 45, y - 85);
   }
 
   animateEnemies() {
-    for (let i = 0; i < this.enemiesGroup.getChildren().length; i += 1) {
-      const enemy = this.enemiesGroup.getChildren()[i];
-      if (enemy.body.velocity.x > 0) {
+    this.enemiesGroup.getChildren().forEach((enemy) => {
+      const { velocity } = enemy.body;
+      if (velocity.x > 0) {
         enemy.play('tree-side', true);
         enemy.setFlipX(false);
-      } else if (enemy.body.velocity.x < 0) {
+      } else if (velocity.x < 0) {
         enemy.play('tree-side', true);
         enemy.setFlipX(true);
-      } else if (enemy.body.velocity.y < 0) {
+      } else if (velocity.y < 0) {
         enemy.play('mole-back', true);
-      } else if (enemy.body.velocity.y > 0) {
+      } else if (velocity.y > 0) {
         enemy.play('mole-front', true);
       }
-    }
+    });
   }
 
-  destroyArrows() {
-    for (let i = 0; i < this.projectilesGroup.getChildren().length; i += 1) {
-      const arrow = this.projectilesGroup.getChildren()[i];
+  cullOffscreenArrows() {
+    this.projectilesGroup.getChildren().forEach((arrow) => {
       if (!this.cameras.main.worldView.contains(arrow.x, arrow.y)) {
         arrow.destroy();
       }
-    }
+    });
   }
 }

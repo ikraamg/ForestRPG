@@ -1,80 +1,53 @@
 import PlayerModel from '../objects/PlayerModel';
 
-const playerModel = new PlayerModel();
+describe('PlayerModel', () => {
+  let playerModel;
 
-describe('Create and read the score', () => {
-  it('create the score', () => {
-    playerModel.score = '100';
-    expect(playerModel.score).toBe('100');
+  beforeEach(() => {
+    playerModel = new PlayerModel();
   });
 
-  it('read the score', () => {
-    expect(playerModel.score).toBe('100');
-  });
-});
-
-describe('Create and read the health', () => {
-  it('create the health', () => {
-    playerModel.health = '3';
-    expect(playerModel.health).toBe('3');
-  });
-
-  it('read the health', () => {
-    expect(playerModel.health).toBe('3');
-  });
-});
-
-describe('Create and read the hurtFlag', () => {
-  it('create the hurtFlag', () => {
-    playerModel.hurtFlag = 'true';
-    expect(playerModel.hurtFlag).toBe('true');
+  test('starts with default combat stats', () => {
+    expect(playerModel).toMatchObject({
+      health: 3,
+      score: 0,
+      hurtFlag: false,
+      direction: 'down',
+      kills: 0,
+      shots: 0,
+      scoreCalc: 0,
+    });
   });
 
-  it('read the hurtFlag', () => {
-    expect(playerModel.hurtFlag).toBe('true');
-  });
-});
+  test('stores score and health updates', () => {
+    playerModel.score = 100;
+    playerModel.health = 2;
 
-describe('Create and read the kills', () => {
-  it('create the kills', () => {
-    playerModel.kills = '100';
-    expect(playerModel.kills).toBe('100');
+    expect(playerModel.score).toBe(100);
+    expect(playerModel.health).toBe(2);
   });
 
-  it('read the kills', () => {
-    expect(playerModel.kills).toBe('100');
-  });
-});
-
-describe('Create and read the scoreCalc', () => {
-  it('create the scoreCalc', () => {
-    playerModel.scoreCalc = '100';
-    expect(playerModel.scoreCalc).toBe('100');
-  });
-
-  it('read the scoreCalc', () => {
-    expect(playerModel.scoreCalc).toBe('100');
-  });
-});
-
-describe('Create and read the shots', () => {
-  it('create the shots', () => {
-    playerModel.shots = '100';
-    expect(playerModel.shots).toBe('100');
-  });
-
-  it('read the shots', () => {
-    expect(playerModel.shots).toBe('100');
-  });
-});
-
-describe('Create and read the direction', () => {
-  it('create the direction', () => {
+  test('tracks combat flags and counters', () => {
+    playerModel.hurtFlag = true;
+    playerModel.kills = 4;
+    playerModel.shots = 7;
     playerModel.direction = 'left';
+
+    expect(playerModel.hurtFlag).toBe(true);
+    expect(playerModel.kills).toBe(4);
+    expect(playerModel.shots).toBe(7);
     expect(playerModel.direction).toBe('left');
   });
 
-  it('read the direction', () => {
-    expect(playerModel.direction).toBe('left');
+  test('calculates score from health, kills, shots, and time', () => {
+    playerModel.health = 3;
+    playerModel.kills = 6;
+    playerModel.shots = 10;
+
+    const score = playerModel.calculateScore(20);
+
+    // (3 * 200) + (6 * 100) - (10 * 10) - (20 * 2) = 1060
+    expect(score).toBe(1060);
+    expect(playerModel.scoreCalc).toBe(1060);
   });
 });

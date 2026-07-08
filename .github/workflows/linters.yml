@@ -1,34 +1,28 @@
-name: Linters
+name: CI
 
-on: pull_request
+on:
+  pull_request:
+  push:
+    branches: [development, master]
 
 env:
   FORCE_COLOR: 1
 
 jobs:
-  eslint:
-    name: ESLint
-    runs-on: ubuntu-18.04
+  test:
+    name: Test & Lint
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: '12.x'
-      - name: Setup ESLint
-        run: |
-          npm install --save-dev eslint@6.8.x eslint-config-airbnb-base@14.1.x eslint-plugin-import@2.20.x
-          [ -f .eslintrc.json ] || wget https://raw.githubusercontent.com/microverseinc/linters-config/master/javascript/.eslintrc.json
-      - name: ESLint Report
-        run: npx eslint .
-  stylelint:
-    name: Stylelint
-    runs-on: ubuntu-18.04
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
-        with:
-          node-version: '12.x'
-      - name: Setup Stylelint
-        run: |
-          npm install --save-dev stylelint@13.3.x stylelint-scss@3.17.x stylelint-config-standard@20.0.x stylelint-csstree-validator
-          [ -f .stylelintrc.json ] || wget https://raw.githubusercontent.com/microverseinc/linters-config/master/javascript/.stylelintrc.json
+          node-version: '20'
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Lint
+        run: npm run lint
+      - name: Test
+        run: npm test
+      - name: Build
+        run: npm run build

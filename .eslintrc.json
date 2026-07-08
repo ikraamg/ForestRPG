@@ -1,11 +1,11 @@
 {
   "env": {
     "browser": true,
-    "es6": true,
+    "es2021": true,
     "jest": true
   },
   "parserOptions": {
-    "ecmaVersion": 2018,
+    "ecmaVersion": "latest",
     "sourceType": "module"
   },
   "extends": ["airbnb-base"],
@@ -13,10 +13,14 @@
     "no-shadow": "off",
     "no-param-reassign": "off",
     "eol-last": "off",
-    "arrow-parens": "off"
+    "arrow-parens": "off",
+    "import/prefer-default-export": "off",
+    "no-console": ["warn", { "allow": ["warn", "error"] }],
+    "class-methods-use-this": "off"
   },
   "ignorePatterns": [
     "dist/",
-    "build/"
+    "build/",
+    "node_modules/"
   ]
 }

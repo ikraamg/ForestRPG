@@ -3,9 +3,53 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" href="" />
+    <meta name="description" content="Forest RPG — a Phaser 3 fantasy forest adventure" />
     <title>Forest RPG</title>
+    <style>
+      :root {
+        color-scheme: dark;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        min-height: 100%;
+        background:
+          radial-gradient(ellipse at top, #1a3a28 0%, #0b1a12 55%, #050a08 100%);
+        font-family: "Courier New", Courier, monospace;
+      }
+
+      body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+      }
+
+      #game {
+        width: min(100vw, 800px);
+        height: min(100vh, 600px);
+        box-shadow: 0 0 0 2px #2f5d3f, 0 24px 60px rgba(0, 0, 0, 0.45);
+      }
+
+      #game canvas {
+        display: block;
+        image-rendering: pixelated;
+      }
+
+      input[name="nameField"] {
+        border: 2px solid #2f5d3f;
+        border-radius: 4px;
+        padding: 6px 10px;
+        outline: none;
+      }
+    </style>
   </head>
-  <script src="build/project.bundle.js" charset="utf-8"></script>
-  <body></body>
+  <body>
+    <div id="game"></div>
+  </body>
 </html>

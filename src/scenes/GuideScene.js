@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { bodyStyle } from '../ui/textStyles';
 
 export default class GuideScene extends Phaser.Scene {
   constructor() {
@@ -6,7 +7,24 @@ export default class GuideScene extends Phaser.Scene {
   }
 
   create() {
-    this.addDisplayElements();
+    this.add.tileSprite(400, 300, 800, 600, 'title-bg');
+    this.add.image(400, 225, 'instructions').setScale(3.5);
+    this.add.image(400, 525, 'enter').setScale(3);
+
+    this.add.text(
+      400,
+      415,
+      'Kill enemies quickly with as few arrows as you can.',
+      bodyStyle,
+    ).setOrigin(0.5);
+
+    this.add.text(
+      400,
+      450,
+      'Get 6 kills or more to open the mountain door.',
+      bodyStyle,
+    ).setOrigin(0.5);
+
     this.enterKey = this.input.keyboard.addKeys('enter');
   }
 
@@ -14,29 +32,5 @@ export default class GuideScene extends Phaser.Scene {
     if (Phaser.Input.Keyboard.JustDown(this.enterKey.enter)) {
       this.scene.start('GameScene');
     }
-  }
-
-  addDisplayElements() {
-    this.add.tileSprite(400, 300, 800, 600, 'title-bg');
-    this.add.image(400, 225, 'instructions').setScale(3.5);
-    this.add.image(400, 525, 'enter').setScale(3);
-
-    this.add.text(120, 450,
-      'Get 6 kills or more to open the mountain door.', {
-        fontFamily: 'monospace',
-        fontSize: 20,
-        fontStyle: 'bold',
-        color: '#ffffff',
-        align: 'center',
-      });
-
-    this.add.text(20, 415,
-      'Try to quickly kill the most enemies, with the the least arrows.', {
-        fontFamily: 'monospace',
-        fontSize: 20,
-        fontStyle: 'bold',
-        color: '#ffffff',
-        align: 'center',
-      });
   }
 }
