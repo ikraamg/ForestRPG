@@ -1,29 +1,31 @@
 import Phaser from 'phaser';
+import { ARROW_SPEED, DIRECTIONS } from '../config/constants';
 
 export default class Arrow extends Phaser.Physics.Arcade.Sprite {
   constructor(scene) {
-    super(scene, scene.player.x, scene.player.y, 'atlas', 'arrow');
-    scene.sys.updateList.add(this);
-    scene.sys.displayList.add(this);
+    const { player } = scene;
+    super(scene, player.x, player.y, 'atlas', 'arrow');
 
-    scene.physics.world.enableBody(this);
-    const vel = 270;
-    switch (scene.player.playerModel.direction) {
-      case 'up':
-        this.body.velocity.y = -vel;
+    scene.add.existing(this);
+    scene.physics.add.existing(this);
+
+    switch (player.playerModel.direction) {
+      case DIRECTIONS.UP:
+        this.body.velocity.y = -ARROW_SPEED;
         break;
-      case 'down':
-        this.body.velocity.y = vel;
+      case DIRECTIONS.DOWN:
+        this.body.velocity.y = ARROW_SPEED;
         break;
-      case 'left':
-        this.body.velocity.x = -vel;
+      case DIRECTIONS.LEFT:
+        this.body.velocity.x = -ARROW_SPEED;
         this.angle = 90;
         break;
-      case 'right':
-        this.body.velocity.x = vel;
+      case DIRECTIONS.RIGHT:
+        this.body.velocity.x = ARROW_SPEED;
         this.angle = 270;
         break;
       default:
+        break;
     }
   }
 }

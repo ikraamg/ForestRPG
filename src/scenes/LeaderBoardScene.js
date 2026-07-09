@@ -1,5 +1,12 @@
 import Phaser from 'phaser';
-import { getScores } from '../api/api';
+import { getTopScores } from '../scores/scores';
+import { LEADERBOARD_DISPLAY_COUNT } from '../config/constants';
+import {
+  bodyStyle,
+  captionStyle,
+  headingStyle,
+  leaderboardRowStyle,
+} from '../ui/textStyles';
 
 export default class LeaderBoardScene extends Phaser.Scene {
   constructor() {
@@ -7,46 +14,39 @@ export default class LeaderBoardScene extends Phaser.Scene {
   }
 
   create() {
-    this.add.text(400, 100, 'LeaderBoard', {
-      color: 'white',
-      fontSize: '32px ',
-    }).setOrigin(0.5, 0.5);
+    this.add.tileSprite(400, 300, 800, 600, 'title-bg');
 
-    this.loading = this.add.text(400, 150, 'Loading...', {
-      color: 'white',
-      fontSize: '16px ',
-    }).setOrigin(0.5, 0.5);
+    this.add.text(400, 80, 'Leaderboard', headingStyle).setOrigin(0.5);
+    this.add.text(400, 120, 'Top scores saved on this device', captionStyle).setOrigin(0.5);
 
-    getScores().then((scores) => {
-      this.enterDisplay();
-      const scoreStyle = {
-        color: 'white',
-        fontSize: '38px ',
-      };
-      const { result } = scores;
-      const resultsCount = 5;
-      result.sort((x, y) => y.score - x.score);
-      result.slice(0, resultsCount).forEach((topscore, index) => {
-        if (topscore) {
-          this.add.text(60, 200 + (40 * index),
-            `${index + 1}. Name: ${topscore.user} -- Score: ${topscore.score}`,
-            scoreStyle);
-        }
-      });
-    });
+    this.renderScores();
+    this.add.image(400, 520, 'enter').setScale(3);
+    this.add.text(400, 560, 'Press ENTER to return to the menu', bodyStyle).setOrigin(0.5);
 
     this.endKeys = this.input.keyboard.addKeys('enter');
   }
 
+  renderScores() {
+    const scores = getTopScores(LEADERBOARD_DISPLAY_COUNT);
+
+    if (scores.length === 0) {
+      this.add.text(400, 280, 'No scores yet — go make history!', bodyStyle).setOrigin(0.5);
+      return;
+    }
+
+    scores.forEach((entry, index) => {
+      this.add.text(
+        400,
+        190 + (index * 48),
+        `${index + 1}. ${entry.user}  —  ${entry.score}`,
+        leaderboardRowStyle,
+      ).setOrigin(0.5);
+    });
+  }
 
   update() {
     if (Phaser.Input.Keyboard.JustDown(this.endKeys.enter)) {
       this.scene.start('MenuScene');
     }
-  }
-
-  enterDisplay() {
-    this.loading.destroy();
-    this.add.image(400, 500, 'enter').setScale(3);
   }
 }
